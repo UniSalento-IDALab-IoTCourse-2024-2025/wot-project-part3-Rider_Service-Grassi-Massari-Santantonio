@@ -1,0 +1,31 @@
+services:
+  rider-sba:
+      image: openjdk:23-jdk
+      container_name: rider-sba
+      ports:
+        - 8082:8080
+        - 8002:8000
+      expose:
+        - "8002"
+      depends_on:
+        - riderdb
+      networks:
+        - my-net
+      volumes:
+        - ./build/libs/fastgo_rider-0.0.1-SNAPSHOT.jar:/app/app.jar
+      working_dir: /app
+      entrypoint: >
+        java -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar /app/app.jar
+
+  riderdb:
+    image: mongo:5.0
+    container_name: riderdb
+    ports:
+        - 27019:27017
+    networks:
+          - my-net
+
+networks:
+      my-net:
+        driver:
+         'bridge'
