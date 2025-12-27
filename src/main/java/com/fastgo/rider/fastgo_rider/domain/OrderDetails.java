@@ -34,6 +34,7 @@ public class OrderDetails {
     public void setPriceProduct(double priceProduct) {
         this.priceProduct = priceProduct;
     }
+  
     
 
 }

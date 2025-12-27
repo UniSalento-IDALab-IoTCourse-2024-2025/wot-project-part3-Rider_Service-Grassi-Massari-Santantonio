@@ -24,7 +24,7 @@ public class SyncListener {
     @RabbitListener(queues = "rider.sync.request.queue")
     public String handleRiderSyncRequest(SyncRiderDto syncRiderDto) {
         
-        //stampa il JSON (toString() del DTO)
+        
         log.info("Richiesta di sincronizzazione ricevuta per: {}", syncRiderDto.toString());
 
         if (!riderService.isRiderTokenValid(syncRiderDto.getToken())) {

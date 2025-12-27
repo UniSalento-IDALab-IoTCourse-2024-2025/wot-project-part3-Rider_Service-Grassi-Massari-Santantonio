@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fastgo.rider.fastgo_rider.domain.Orders;
+import com.fastgo.rider.fastgo_rider.dto.OrderDto;
 import com.fastgo.rider.fastgo_rider.service.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @CrossOrigin(origins = "*")
@@ -35,6 +37,7 @@ public class RIderRestController {
     @GetMapping(value = "/order", produces = "application/json")
     public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String token) {
 
+        token = token.replace("Bearer ", "");
         if (!riderService.isRiderTokenValid(token)) {
             return ResponseEntity.status(401).body(Map.of("message","Unauthorized: Invalid Rider Token"));
         }
@@ -71,5 +74,26 @@ public class RIderRestController {
         }
     }
 
-    
+    @PostMapping("/accept")
+    public ResponseEntity<?> acceptOrder(@RequestHeader("Authorization") String token, 
+                                         @RequestBody OrderDto body) {
+        
+        String orderId = body.getId();
+
+        token = token.replace("Bearer ", "");
+        
+        if (!riderService.isRiderTokenValid(token)) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        boolean success = orderService.acceptOrder(orderId, token);
+
+        if (success) {
+            return ResponseEntity.ok(Map.of("message", "Order accepted successfully"));
+        } else {
+            return ResponseEntity.status(409).body(Map.of("message", "Failed to accept order (already taken or connection error)"));
+        }
+    }
+
+
 }

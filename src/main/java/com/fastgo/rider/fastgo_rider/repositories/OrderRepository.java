@@ -19,5 +19,6 @@ public interface OrderRepository extends MongoRepository<Orders, String> {
     );
 
 
+    boolean existsByRiderIdAndOrderStatus(String riderId, OrderStatus orderStatus);
     
 }
