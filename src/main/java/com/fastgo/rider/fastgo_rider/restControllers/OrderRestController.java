@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fastgo.rider.fastgo_rider.domain.Orders;
+import com.fastgo.rider.fastgo_rider.dto.ListOrderDto;
 import com.fastgo.rider.fastgo_rider.dto.OrderDto;
 import com.fastgo.rider.fastgo_rider.dto.OrderStatusDto;
 import com.fastgo.rider.fastgo_rider.dto.PositionDto;
@@ -65,6 +66,26 @@ public class OrderRestController {
 
         if (activeOrder != null) {
             return ResponseEntity.ok(activeOrder);
+        } else {
+            
+            return ResponseEntity.status(200).body(null); 
+        }
+    }
+
+
+    @GetMapping(value = "/history", produces = "application/json")
+    public ResponseEntity<?> getHistory(@RequestHeader("Authorization") String token) {
+        
+        token = token.replace("Bearer ", "");
+
+        if (!riderService.isRiderTokenValid(token)) {
+            return ResponseEntity.status(401).body(Map.of("message", "Unauthorized: Invalid Rider Token"));
+        }
+
+        ListOrderDto history = orderService.getHistoryForRider(token);
+
+        if (history != null) {
+            return ResponseEntity.ok(history);
         } else {
             
             return ResponseEntity.status(200).body(null); 

@@ -69,6 +69,10 @@ public class OrderService {
         }
     }
 
+    public ListOrderDto getHistoryForRider(String token){
+        return convertToListOrderDto(getByRiderToken(token));
+    }
+
     public Orders getOrderById(String orderId) {
         Optional<Orders> order = orderRepository.findById(orderId);
         if (order.isPresent()) {
